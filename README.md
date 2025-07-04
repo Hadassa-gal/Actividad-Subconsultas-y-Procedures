@@ -15,7 +15,7 @@ TABLA NORMALIZADA:
    LIMIT 1;
    ```
 
-   ![image-20250704111253156](/home/camper/.config/Typora/typora-user-images/image-20250704111253156.png)
+   ![image-20250704111253156](https://media.discordapp.net/attachments/1337463162940817490/1390754346207019130/image.png?ex=6869686b&is=686816eb&hm=d679ac6c0109acd8433bdb65325a6bea12e49828c499a5dad031f5d52009198c&=&format=webp&quality=lossless&width=877&height=138)
 
 2. Encontrar el cliente con mayor total en pedidos.
 
@@ -28,9 +28,7 @@ TABLA NORMALIZADA:
    LIMIT 1;
    ```
 
-   ![image-20250704115416993](/home/camper/.config/Typora/typora-user-images/image-20250704115416993.png)
-
-   ![image-20250704115452976](/home/camper/.config/Typora/typora-user-images/image-20250704115452976.png)
+   ![image-20250704115416993](https://media.discordapp.net/attachments/1337463162940817490/1390754527531241584/image.png?ex=68696896&is=68681716&hm=c1b0c445aba4f5c15e5f6ab61fc8c7fffe4bad943060113135884f16c96f8355&=&format=webp&quality=lossless&width=877&height=470)
 
 3. Listar empleados que ganan más que el salario promedio.
 
@@ -40,7 +38,7 @@ TABLA NORMALIZADA:
    WHERE e.salario > (SELECT AVG(salario) FROM empleados);
    ```
 
-   ![image-20250704114452467](/home/camper/.config/Typora/typora-user-images/image-20250704114452467.png)
+   ![image-20250704114452467](https://media.discordapp.net/attachments/1337463162940817490/1390754579565641808/image.png?ex=686968a2&is=68681722&hm=2612eb5be39046464e11645c58e2d4962e4732329f31fab247073299c6a168d5&=&format=webp&quality=lossless&width=877&height=186)
 
 4. Consultar productos que han sido pedidos más de 5 veces.
 
@@ -52,7 +50,7 @@ TABLA NORMALIZADA:
    HAVING total_pedidos > 5;
    ```
 
-   ![image-20250704123035774](/home/camper/.config/Typora/typora-user-images/image-20250704123035774.png)
+   ![image-20250704123035774](https://media.discordapp.net/attachments/1337463162940817490/1390754622213329008/image.png?ex=686968ac&is=6868172c&hm=485a17a4522839d408ea7bd8decac6578269d8cdfb641f811d195c901bbb17a6&=&format=webp&quality=lossless&width=877&height=285)
 
 5. Listar pedidos cuyo total es mayor al promedio de todos los pedidos.
 
@@ -63,7 +61,7 @@ TABLA NORMALIZADA:
    ORDER BY precio DESC;
    ```
 
-   ![image-20250704124458469](/home/camper/.config/Typora/typora-user-images/image-20250704124458469.png)
+   ![image-20250704124458469](https://media.discordapp.net/attachments/1337463162940817490/1390754693499715756/image.png?ex=686968bd&is=6868173d&hm=38ead235602a912f5bada90eb0b6ab52a4859918d09383c692253e92f74f633f&=&format=webp&quality=lossless&width=877&height=342)
 
 6. Seleccionar los 3 proveedores con más productos.
 
@@ -76,40 +74,63 @@ TABLA NORMALIZADA:
    LIMIT 3;
    ```
 
-   ![image-20250704125320878](/home/camper/.config/Typora/typora-user-images/image-20250704125320878.png)
+   ![image-20250704125320878](https://media.discordapp.net/attachments/1337463162940817490/1390754760529018880/image.png?ex=686968cd&is=6868174d&hm=cbc245c5ca792dbfb7d5fec0708705de2c844e3cb1873f26ea81ba057ba33890&=&format=webp&quality=lossless&width=877&height=424)
 
 7. Consultar productos con precio superior al promedio en su tipo.
 
    ```sql
-   SELECT
+   SELECT p.nombre AS producto, p.precio, tp.tipo_nombre
    FROM productos p
    JOIN tiposproducto tp ON p.tipo_id = tp.id
-   WHERE precio > (SELECT AVG(...) FROM ... GROUP BY ...)
+   WHERE p.precio > ( SELECT AVG(p2.precio) FROM productos p2 WHERE p2.tipo_id = p.tipo_id);
    ```
+
+   ![image-20250704125320878](https://media.discordapp.net/attachments/1337463162940817490/1390783215178088491/image.png?ex=6869834e&is=686831ce&hm=ef08f2e69b2659bfba453df11da89196a91f4b85da2228838fa8b95c51ad2a34&=&format=webp&quality=lossless&width=877&height=310)
 
    
 
 8. Mostrar clientes que han realizado más pedidos que la media.
 
    ```sql
-   
+   SELECT c.nombre AS cliente, COUNT(p.id)
+   FROM clientes c
+   JOIN pedidos p ON c.id = p.cliente_id
+   GROUP BY c.id, c.nombre
+   HAVING COUNT(p.id) > (SELECT AVG(pedidos_por_cliente)
+                        FROM ( SELECT COUNT(id) AS pedidos_por_cliente
+                              FROM pedidos 
+                              GROUP BY cliente_id) AS sub);
    ```
 
-   
+   ![image-20250704125320878](https://media.discordapp.net/attachments/1337463162940817490/1390793912314232902/image.png?ex=68698d44&is=68683bc4&hm=89e6f303b9613a812d743c4c55a14eb54f2199ae6748b7b32e07bf608de82710&=&format=webp&quality=lossless&width=877&height=261)
 
 9. Encontrar productos cuyo precio es mayor que el promedio de todos los productos.
 
    ```sql
-   
+   SELECT p.nombre AS producto, p.precio
+   FROM productos p
+   WHERE p.precio > (SELECT AVG(precio) FROM productos);
    ```
 
-   
+   ![image-20250704125320878](https://media.discordapp.net/attachments/1337463162940817490/1390796121558876240/image.png?ex=68698f53&is=68683dd3&hm=f84b6537ce82a5b123c5d02ecd9fd05137e6019afab5b34256505cfe70122138&=&format=webp&quality=lossless&width=877&height=349)
 
 10. Mostrar empleados cuyo salario es menor al promedio del departamento.
 
+    (departamento = puesto del empleado?)
+
     ```sql
+    SELECT e.nombre AS empleado, e.salario
+    FROM empleados e
+    WHERE e.salario < (SELECT AVG(som) FROM (SELECT COUNT(e2.id) AS som FROM empleados e2 GROUP BY puesto_id) AS sub);
     
+    SELECT AVG(e.salario)
+    FROM empleados e;
+    
+    SELECT e.nombre AS empleado, e.salario, e.puesto_id
+    FROM empleados e;
     ```
+
+​	![image-20250704125320878](https://media.discordapp.net/attachments/1337463162940817490/1390799994256359425/image.png?ex=686992ee&is=6868416e&hm=8edaec98a9ba5cb99705a9b653b12cff6468b709fbe0289da1134a8c88402ade&=&format=webp&quality=lossless&width=877&height=491)
 
 ## 6. Procedimientos Almacenados
 
