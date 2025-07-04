@@ -130,22 +130,44 @@ TABLA NORMALIZADA:
     FROM empleados e;
     ```
 
-​	![image-20250704125320878](https://media.discordapp.net/attachments/1337463162940817490/1390799994256359425/image.png?ex=686992ee&is=6868416e&hm=8edaec98a9ba5cb99705a9b653b12cff6468b709fbe0289da1134a8c88402ade&=&format=webp&quality=lossless&width=877&height=491)
+    ![image-20250704125320878](https://media.discordapp.net/attachments/1337463162940817490/1390799994256359425/image.png?ex=686992ee&is=6868416e&hm=8edaec98a9ba5cb99705a9b653b12cff6468b709fbe0289da1134a8c88402ade&=&format=webp&quality=lossless&width=877&height=491)
 
 ## 6. Procedimientos Almacenados
 
 1. Crear un procedimiento para actualizar el precio de todos los productos de un proveedor.
 
    ```sql
+   DELIMITER $$
    
+   CREATE PROCEDURE actualizar_precios_proveedor (
+       IN proveedor_id_input INT,
+       IN porcentaje_aumentar DECIMAL(5,2)
+   )
+   BEGIN
+       UPDATE productos p
+       JOIN productos_proveedores pp ON p.id = pp.producto_id
+       SET p.precio = p.precio * (1 + porcentaje_aumentar / 100)
+       WHERE pp.proveedor_id = proveedor_id_input;
+   END $$
+   
+   DELIMITER ;
    ```
 
-   
+   ![image-20250704125320878](https://media.discordapp.net/attachments/1337463162940817490/1390820474224640151/image.png?ex=6869a601&is=68685481&hm=d01ee81d15164bdee6b187e1f30421a6531e92bf30edab21a430c2298b258254&=&format=webp&quality=lossless&width=459&height=726)
 
 2. Un procedimiento que devuelva la dirección de un cliente por ID.
 
    ```sql
+   DELIMITER $$
    
+   CREATE PROCEDURE actualizar_precios_proveedor (
+       IN proveedor_id_input INT
+   )
+   BEGIN
+       SELECT ;
+   END $$
+   
+   DELIMITER ;
    ```
 
    
